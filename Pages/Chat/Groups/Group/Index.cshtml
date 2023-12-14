@@ -1,0 +1,32 @@
+﻿@page "{id:int}"
+@using Ganss.Xss;
+@{
+    var sanitizer = new HtmlSanitizer();
+    sanitizer.AllowedTags.Add("iframe");
+    sanitizer.AllowedAttributes.Add("src");
+    sanitizer.AllowedAttributes.Add("width");
+    sanitizer.AllowedAttributes.Add("height");
+}
+@model WebChat.Pages.Chat.Groups.Group.IndexModel
+@{
+    <input type="hidden" id="CurrentID" value="@Model.GroupId" />
+    <div class="container overflow-auto" id="messagesList" style="height: 80vh">
+        @if (Model.Messages != null && Model.Messages.Any())
+        {
+                @foreach (var message in Model.Messages)
+                {
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <p class="card-text d-flex"><b class="me-2">@message.User: </b>@Html.Raw(sanitizer.Sanitize(message.Text))</p>
+                        </div>
+                    </div>
+                }
+        }
+	</div>
+	<div class="container d-flex">
+		<input type="text" id="messageInput" class="flex-fill p-1 rounded">
+		<button id="sendButton" class="btn btn-primary rounded ms-2">Send</button>
+	</div>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/groupchat.js"></script>
+}
