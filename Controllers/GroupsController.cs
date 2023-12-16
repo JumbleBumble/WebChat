@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
+using System.Collections.ObjectModel;
 using WebChat.Data;
 using WebChat.Models;
+using WebChat.Repositories.Interfaces;
 
 namespace WebChat.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GroupsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-		private readonly UserManager<IdentityUser> _userManager;
+		private readonly UserManager<AppUser> _userManager;
+		private readonly IGroups _igroups;
+        private readonly ILogger<GroupsController> _logger;
 
-		public GroupsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public GroupsController(ApplicationDbContext context, UserManager<AppUser> userManager, IGroups igroups, ILogger<GroupsController> logger)
         {
             _context = context;
 			_userManager = userManager;
-
-		}
+            _igroups = igroups;
+            _logger = logger;
+        }
 
        
 
@@ -36,17 +34,18 @@ namespace WebChat.Controllers
 		{
 			if (userNames == null || userNames.Count == 0)
 			{
-				return BadRequest("The userNames field is required and must not be empty.");
+                _logger.LogWarning("Usernames list is null or empty");
+                return BadRequest("The userNames field is required and must not be empty.");
 			}
-			Group? matchingGroup = await _context.Groups
-	        .Where(g => g.Users.Any(u =>
-		        u.UserName != null && userNames.Contains(u.UserName)))
-	        .FirstOrDefaultAsync();
-			if (matchingGroup == null)
+			IEnumerable<Group> groups = _igroups.GetGroups();
+            groups ??= new List<Group>();
+			bool matchingGroup = groups.Any(group => 
+			group.Users?.All(u => u.UserName != null && userNames.Contains(u.UserName))
+			?? false);
+            if (matchingGroup == false)
             {
-				List<IdentityUser>? users = null;
+				List<AppUser>? users = null;
    
-
 				users = await _userManager.Users.Where(u =>
 				u.UserName != null && userNames.Contains(u.UserName)).ToListAsync();
 
@@ -55,13 +54,12 @@ namespace WebChat.Controllers
 					var newGroup = new Group
 					{
 						Name = "NewGroup",
-						Users = new Collection<IdentityUser>(),
+						Users = new Collection<AppUser>(),
                         Messages = new Collection<GroupMessage>()
 					};
 					newGroup.Users = users;
 
-					await _context.Groups.AddAsync(newGroup);
-					await _context.SaveChangesAsync();
+					await _igroups.CreateGroup(newGroup);
 					return Ok("Group Created");
 				}
 				else
@@ -78,19 +76,37 @@ namespace WebChat.Controllers
 		[HttpPost("Name/{id}")]
 		public async Task<ActionResult<Group>> EditName(int id, [FromBody] string name)
 		{
-			IdentityUser? actionUser = await _userManager.GetUserAsync(HttpContext.User);
+			AppUser? actionUser = await _userManager.GetUserAsync(HttpContext.User);
 			if (actionUser != null) 
 			{
-				Group? group = await _context.Groups.Include(g => g.Users).FirstAsync(g => g.Id == id);
-				if (group != null && group.Users.Contains(actionUser))
+				Group? group = _igroups.GetGroupById(id);
+				if (group != null && group.Users != null)
 				{
-					group.Name = name;
-					await _context.SaveChangesAsync();
-					return Ok();
+                    var users = group.Users.ToList();
+                    if (users.Any() && users.Contains(actionUser))
+                    {
+                        group.Name = name;
+                        await _igroups.UpdateGroup(group);
+                        _logger.LogInformation("Group {GroupId} renamed to {NewName}", id, name);
+                        return Ok();
+                    }
 				}
 			}
 			return NotFound();
 
+		}
+
+		[HttpGet("Test")]
+		public ActionResult Test()
+        {
+
+            Group? users = _igroups.GetGroupById(11);//_context.Groups.Where(g => g.Id == 11).Include(g => g.Users).FirstOrDefault();
+            
+            foreach(var user in users.Users)
+            {
+                Console.WriteLine(user.UserName);
+            }
+            return Ok((_igroups.GetGroupById(11)?.Messages?.ToString() ?? "Empty") + (_igroups.GetGroupById(11)?.Name ?? "Empty"));
 		}
 
 
@@ -103,43 +119,30 @@ namespace WebChat.Controllers
                 return NotFound();
             }
 
-            Group? @group = null;
-            try
-            {
-                @group = await _context.Groups
-            .Include(g => g.Users)
-            .Include(g => g.Messages)
-            .FirstAsync(g => g.Id == id);
-            } catch(InvalidOperationException)
+            Group? group = _igroups.GetGroupById(id);
+            if (group == null)
             {
                 return NotFound();
             }
-            if (@group == null)
-            {
-                return NotFound();
-            }
-			IdentityUser? actionUser = await _userManager.GetUserAsync(HttpContext.User);
-
-			var users = @group.Users.ToList();
-            if (actionUser != null && users.Contains(actionUser))
-            {
-				@group.Users.Remove(actionUser);
-                if (@group.Users.Count <= 1)
+            AppUser? actionUser = await _userManager.GetUserAsync(HttpContext.User);
+			if (group.Users != null && group.Users.Any())
+			{
+                if (actionUser != null && group.Users.Contains(actionUser))
                 {
-					var messages = @group.Messages.ToList();
-					foreach (var message in messages)
-					{
-						@group.Messages.Remove(message);
-					}
-					_context.Groups.Remove(@group);
-				}
-				await _context.SaveChangesAsync();
+                    group.Users.Remove(actionUser);
+                    if (group.Users.Count <= 1)
+                    {
+                        await _igroups.DeleteGroup(id); 
+                    }
+                    else
+                    {
+                        await _igroups.UpdateGroup(group);
+                    }
 
-				return Ok("Removed");
-			} else
-            {
-				return NotFound();
-			}
+                    return Ok("Removed");
+                }
+            }
+            return NotFound();
         }
 
         private bool GroupExists(int id)
