@@ -1,0 +1,102 @@
+<svg class="back"
+				 xmlns="http://www.w3.org/2000/svg"
+				 version="1.1"
+				 xmlns:xlink="http://www.w3.org/1999/xlink"
+				 xmlns:svgjs="http://svgjs.dev/svgjs"
+				 width="1440"
+				 height="560"
+				 preserveAspectRatio="none"
+				 viewBox="0 0 1440 560">
+				<g mask='url("#SvgjsMask1036")' fill="none">
+					<rect width="1440" height="560" x="0" y="0" fill="#1a4e83"></rect>
+					<path id="f1"
+						  d="M0 0L784.74 0L0 895.25z"
+						  filter="url(#SvgjsFilter1037)"
+						  fill="#2d409e"></path>
+					<path id="f2"
+						  d="M0 560L784.74 560L0 -335.25z"
+						  filter="url(#SvgjsFilter1037)"
+						  fill="#2d409e"></path>
+					<path id="f3"
+						  d="M1440 560L655.26 560L1440 -335.25z"
+						  filter="url(#SvgjsFilter1037)"
+						  fill="#2d409e"></path>
+					<path id="f4"
+						  d="M1440 0L655.26 0L1440 895.25z"
+						  filter="url(#SvgjsFilter1037)"
+						  fill="#2d409e"></path>
+				</g>
+				<g mask='url("#SvgjsMask1040")' fill="none" style="visibility: hidden">
+					<rect width="1440" height="560" x="0" y="0" fill="#1a4e83"></rect>
+					<path id="ff1"
+						  d="M0 0L991.01 0L0 984.13z"
+						  filter="url(#SvgjsFilter1041)"
+						  fill="#2d409e"></path>
+					<path id="ff2"
+						  d="M0 560L991.01 560L0 -424.13z"
+						  filter="url(#SvgjsFilter1041)"
+						  fill="#2d409e"></path>
+					<path id="ff3"
+						  d="M1440 560L448.99 560L1440 -424.13z"
+						  filter="url(#SvgjsFilter1041)"
+						  fill="#2d409e"></path>
+					<path id="ff4"
+						  d="M1440 0L448.99 0L1440 984.13z"
+						  filter="url(#SvgjsFilter1041)"
+						  fill="#2d409e"></path>
+				</g>
+				<defs>
+					<mask id="SvgjsMask1036">
+						<rect width="1440" height="560" fill="#ffffff"></rect>
+					</mask>
+					<filter height="130%" id="SvgjsFilter1037">
+						<feGaussianBlur in="SourceAlpha"
+										stdDeviation="5"
+										result="TopLeftG"></feGaussianBlur>
+						<feOffset dx="-5"
+								  dy="-5"
+								  in="TopLeftG"
+								  result="TopLeftO"></feOffset>
+						<feComponentTransfer in="TopLeftO" result="TopLeftC">
+							<feFuncA type="linear" slope="0.7"></feFuncA>
+						</feComponentTransfer>
+						<feGaussianBlur in="SourceAlpha"
+										stdDeviation="5"
+										result="TopRightG"></feGaussianBlur>
+						<feOffset dx="5"
+								  dy="-5"
+								  in="TopRightG"
+								  result="TopRightO"></feOffset>
+						<feComponentTransfer in="TopRightO" result="TopRightC">
+							<feFuncA type="linear" slope="0.7"></feFuncA>
+						</feComponentTransfer>
+						<feGaussianBlur in="SourceAlpha"
+										stdDeviation="5"
+										result="BottomLeftG"></feGaussianBlur>
+						<feOffset dx="-5"
+								  dy="5"
+								  in="BottomLeftG"
+								  result="BottomLeftO"></feOffset>
+						<feComponentTransfer in="BottomLeftO" result="BottomLeftC">
+							<feFuncA type="linear" slope="0.7"></feFuncA>
+						</feComponentTransfer>
+						<feGaussianBlur in="SourceAlpha"
+										stdDeviation="5"
+										result="BottomRightG"></feGaussianBlur>
+						<feOffset dx="5"
+								  dy="5"
+								  in="BottomRightG"
+								  result="BottomRightO"></feOffset>
+						<feComponentTransfer in="BottomRightO" result="BottomRightC">
+							<feFuncA type="linear" slope="0.7"></feFuncA>
+						</feComponentTransfer>
+						<feMerge>
+							<feMergeNode in="TopLeftC"></feMergeNode>
+							<feMergeNode in="TopRightC"></feMergeNode>
+							<feMergeNode in="BottomLeftC"></feMergeNode>
+							<feMergeNode in="BottomRightC"></feMergeNode>
+							<feMergeNode in="SourceGraphic"></feMergeNode>
+						</feMerge>
+					</filter>
+				</defs>
+			</svg>

@@ -5,7 +5,7 @@
 }
 
 <header>
-    <h1>@ViewData["Title"]</h1>
+    <h1 class="text-light">@ViewData["Title"]</h1>
     @{
         if (User.Identity?.IsAuthenticated ?? false)
         {
@@ -15,7 +15,7 @@
         }
         else
         {
-            <p>You have successfully logged out of the application.</p>
+            <p class="text-light">You have successfully logged out of the application.</p>
         }
     }
 </header>

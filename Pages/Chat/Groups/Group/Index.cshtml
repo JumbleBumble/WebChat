@@ -1,6 +1,9 @@
 ﻿@page "{id:int}"
 @using Ganss.Xss;
 @{
+    ViewData["Title"] = "Group";
+}
+@{
     var sanitizer = new HtmlSanitizer();
     sanitizer.AllowedTags.Add("iframe");
     sanitizer.AllowedAttributes.Add("src");

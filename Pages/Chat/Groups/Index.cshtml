@@ -1,25 +1,28 @@
 ﻿@page
 @model WebChat.Pages.Chat.Groups.IndexModel
 @{
-	ViewData["CurrentUsername"] = User.Identity.Name;
+	ViewData["Title"] = "Groups";
+}
+@{
+	ViewData["CurrentUsername"] = User?.Identity?.Name ?? "UnknownUser";
 	<input type="hidden" id="CurrentUsername" value="@ViewData["CurrentUsername"]" />
-	<div class="card rounded-3 shadow-sm mx-auto my-4" style="max-width: 50vw;">
+	<div class="card rounded-3 shadow-sm mx-auto my-4 bg-dark" style="max-width: 50vw;">
 
-		<div class="card-header bg-white d-flex align-items-center mb-0 pb-0">
-			<h4 class="flex-grow-1 mb-0">Group Messages</h4>
-			<button class="btn btn-primary rounded-pill m-2" data-bs-toggle="modal" data-bs-target="#groupModal">
-				<i class="">+</i>
+		<div class="card-header d-flex align-items-center mb-0 pb-0 rounded bg-dark">
+			<h4 class="flex-grow-1 mb-0 text-light">Group Messages</h4>
+			<button class="btn btn-primary rounded-circle m-2" data-bs-toggle="modal" data-bs-target="#groupModal">
+				<b>+</b>
 			</button>
 		</div>
 		@if (Model.userGroups != null && Model.userGroups.Any())
 		{
-			<div class="card-body overflow-auto position-relative" style="max-height: 80vh">
+			<div class="card-body overflow-auto position-relative d-grid gap-3" style="max-height: 70vh">
 			@foreach (var group in Model.userGroups)
 			{
 					<div id="@group.Id" class="list-group list-group-flush border rounded-3 overflow-hidden">
 						<div class="list-group-item list-group-item-action rounded-3 p-3">
 							<div class="position-absolute top-0 end-0 d-flex justify-content-end p-1">
-								<button id="del @group.Id" onclick="DelGroup(event)" class="btn btn-danger">X</button>
+								<button id="del @group.Id" onclick="DelGroup(event)" class="btn btn-danger btn-sm">X</button>
 							</div>
 							<div class="d-flex align-items-center">
 								<div>
@@ -27,7 +30,7 @@
 									<div class="container d-flex flex-wrap">
 									@foreach (var user in group.Users)
 									{
-											<div class="avatar me-2 shadow-sm rounded-pill text-center p-1">
+											<div class="avatar me-2 mt-1 shadow-sm rounded-pill text-center p-1 bg-light">
 												@user.UserName
 											</div>
 									}
@@ -35,7 +38,7 @@
 								</div>
 							</div>
 							<div class="d-flex justify-content-center">
-								<button class="btn btn-primary p-1" id="open @group.Id" onclick="OpenGroup(event)">Open</button>
+								<button class="btn btn-primary btn-lg p-1" id="open @group.Id" onclick="OpenGroup(event)">Open</button>
 							</div>
 						</div>
 				</div>

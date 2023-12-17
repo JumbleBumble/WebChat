@@ -39,10 +39,16 @@ namespace WebChat.Controllers
 			}
 			IEnumerable<Group> groups = _igroups.GetGroups();
             groups ??= new List<Group>();
-			bool matchingGroup = groups.Any(group => 
-			group.Users?.All(u => u.UserName != null && userNames.Contains(u.UserName))
-			?? false);
-            if (matchingGroup == false)
+			Group? matchingGroup = groups.FirstOrDefault(group =>
+	        group.Users?.All(u => u.UserName != null && userNames.Contains(u.UserName)) ?? false);
+            bool matchCheck = false;
+
+			if (matchingGroup != null && matchingGroup.Users != null)
+            {
+                matchCheck = userNames.All(u => matchingGroup.Users.All(gu => u == gu.UserName));
+
+			}
+            if (matchCheck == false)
             {
 				List<AppUser>? users = null;
    
@@ -94,19 +100,6 @@ namespace WebChat.Controllers
 			}
 			return NotFound();
 
-		}
-
-		[HttpGet("Test")]
-		public ActionResult Test()
-        {
-
-            Group? users = _igroups.GetGroupById(11);//_context.Groups.Where(g => g.Id == 11).Include(g => g.Users).FirstOrDefault();
-            
-            foreach(var user in users.Users)
-            {
-                Console.WriteLine(user.UserName);
-            }
-            return Ok((_igroups.GetGroupById(11)?.Messages?.ToString() ?? "Empty") + (_igroups.GetGroupById(11)?.Name ?? "Empty"));
 		}
 
 

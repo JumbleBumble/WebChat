@@ -1,12 +1,15 @@
 ﻿@page
 @model WebChat.Pages.Chat.IndexModel
 @{
+	ViewData["Title"] = "Chat";
+}
+@{
     //ViewData["JwtToken"] = JwtService.GenerateJwtToken(user);
 	<div class="container">
 		<div class="row row-cols-1">
 			<div class="col p-3">
 				<div class="container">
-					<h2 class="d-flex justify-content-center">Connected Users</h2>
+					<h2 class="d-flex justify-content-center text-light">Connected Users</h2>
 					<div class="overflow-auto d-grid gap-2" id="usersList" style="max-height: 10em">
 						
 					</div>
@@ -20,7 +23,7 @@
 		</div>
 		<div class="row p-1">
 			<div class="container d-flex flex-column overflow-auto gap-3"
-				 style="height: 65vh"
+				 style="height: 55vh"
 				 id="messagesList">
 
 			</div>
