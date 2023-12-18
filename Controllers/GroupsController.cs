@@ -27,9 +27,7 @@ namespace WebChat.Controllers
             _logger = logger;
         }
 
-       
-
-		[HttpPost("CreateGroup")]
+   		[HttpPost("CreateGroup")]
 		public async Task<ActionResult<Group>> CreateGroup([FromBody] List<string> userNames)
 		{
 			if (userNames == null || userNames.Count == 0)
@@ -101,7 +99,6 @@ namespace WebChat.Controllers
 			return NotFound();
 
 		}
-
 
 		// DELETE: api/Groups/5
 		[HttpDelete("{id}")]

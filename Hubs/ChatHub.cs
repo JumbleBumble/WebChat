@@ -41,7 +41,6 @@ namespace WebChat.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        // You can expose a method to get the list of connected users
         public List<string> GetConnectedUsers()
         {
             var connectedUsers = UserConnections.Keys.ToList();

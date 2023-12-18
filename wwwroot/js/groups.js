@@ -50,8 +50,6 @@ function EnterName(event) {
         });
 }
 
-
-
 function OpenGroup(event) {
     var button = event.target;
     var groupID = button.id.replace("open ", "")
@@ -73,11 +71,6 @@ function DelGroup(event) {
         })
         .catch(error => console.error('Error deleting group:', error));
 }
-
-
-
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     currentUsername = document.getElementById('CurrentUsername').value;

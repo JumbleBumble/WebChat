@@ -4,7 +4,6 @@ var currentID = null;
 
 var connection = null;
 
-//Disable the send button until connection is established.
 document.getElementById("sendButton").disabled = true;
 
 function CreateTitledMessage(title, description) {
@@ -20,8 +19,6 @@ function CreateTitledMessage(title, description) {
     document.getElementById("messagesList").appendChild(divNew);
 }
 
-
-
 function CreateMessage(user, message) {
     var divNew = document.createElement("div");
     divNew.classList.add("card")
@@ -34,7 +31,6 @@ function CreateMessage(user, message) {
     document.getElementById("messagesList").appendChild(divNew);
 }
 
- 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var message = document.getElementById("messageInput").value;
     if (message != null && message != "" && currentID != null) {
@@ -52,23 +48,8 @@ function joinGroup(groupName) {
     });
 }
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
     currentID = document.getElementById('CurrentID').value;
-    /*
-    fetch(`/api/Groups/GroupsMessages/${currentID}`)
-        .then(response => response.json())
-        .then(data => {
-            var messages = data;
-            if (Array.isArray(messages) && messages.length >= 1) {           
-                messages.forEach(msg => {
-                    CreateMessage(msg.User, msg.Text);
-                });
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    */
     connection = new signalR.HubConnectionBuilder().withUrl("/GroupHub").build();
     connection.on("ReceiveMessage", function (user, message) {
         console.log(user+message)
